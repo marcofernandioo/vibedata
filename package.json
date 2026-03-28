@@ -1,0 +1,8 @@
+{
+  "name": "vibedata-workspace",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
