@@ -1,0 +1,46 @@
+name: Enforce Branch Flow
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  check-target-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce merge order
+        run: |
+          BASE="${{ github.base_ref }}"
+          HEAD="${{ github.head_ref }}"
+
+          echo "PR from '$HEAD' into '$BASE'"
+
+          # Hotfix bypass
+          if [[ "$HEAD" == hotfix/* ]]; then
+            echo "Hotfix branch detected, bypass allowed."
+            exit 0
+          fi
+
+          # Enforce allowed targets
+          if [[ "$HEAD" == feat/* && "$BASE" != "dev" ]]; then
+            echo "ERROR: Feature branches can only be merged into 'dev'."
+            exit 1
+          fi
+
+          if [[ "$BASE" == "main" && "$HEAD" != "staging" ]]; then
+            echo "ERROR: Only 'staging' can be merged into 'main'."
+            exit 1
+          fi
+
+          if [[ "$BASE" == "staging" && "$HEAD" != "test" ]]; then
+            echo "ERROR: Only 'test' can be merged into 'staging'."
+            exit 1
+          fi
+
+          if [[ "$BASE" == "test" && "$HEAD" != "dev" ]]; then
+            echo "ERROR: Only 'dev' can be merged into 'test'."
+            exit 1
+          fi
+
+          echo "Branch flow is valid."
+          exit 0
