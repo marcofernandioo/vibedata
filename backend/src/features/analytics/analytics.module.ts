@@ -7,6 +7,6 @@ import { AnalyticsRepository } from './analytics.repository';
 @Module({
   controllers: [AnalyticsController],
   providers: [AnalyticsService, AnalyticsRepository],
-  exports: [AnalyticsService]
+  exports: [AnalyticsService],
 })
 export class AnalyticsModule {}
