@@ -1,67 +1,73 @@
-# Vibedata Frontend
+# React + TypeScript + Vite
 
-React + TypeScript + Vite frontend with Supabase OAuth and NestJS API integration.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features
+Currently, two official plugins are available:
 
-- **Authentication**: Google OAuth + email/password via Supabase, persisted with Zustand
-- **Protected routes**: `AuthGuard` component with redirect-to-login
-- **State management**: Zustand (auth store with devtools + persist middleware)
-- **Server state**: TanStack React Query with 5-minute stale time
-- **Routing**: TanStack Router with type-safe routes
-- **Forms**: react-hook-form + zod schema validation
-- **UI**: Tailwind CSS + shadcn components (base-nova style)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Project Structure
+## React Compiler
 
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-src/
-├── main.tsx                         # React root
-├── App.tsx                          # Providers + Router composition
-├── index.css                        # Tailwind directives, CSS variables, theme
-├── config/                          # Environment variable validation
-├── lib/                             # Supabase client, Axios client, React Query, utils
-├── stores/                          # Zustand auth store
-├── app/
-│   ├── providers.tsx                # QueryClientProvider, ErrorBoundary, auth init
-│   └── router.tsx                   # Route tree, protected layout, loading state
-├── components/
-│   ├── ui/                          # shadcn primitives (Button, FormField)
-│   ├── layout/                      # AuthGuard, NavLink
-│   └── feedback/                    # ErrorBoundary (app + route level)
-└── features/
-    ├── auth/                        # Login, Signup, AuthCallback, auth API, types
-    ├── dashboard/                   # DashboardShell, DashboardHomePage
-    └── analytics/                   # AnalyticsPage (placeholder)
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## Setup
-
-1. Copy `.env.example` to `.env.local` and fill in the values:
-
-   ```
-   VITE_SUPABASE_URL="https://your-project-id.supabase.co"
-   VITE_SUPABASE_ANON_KEY="your-supabase-anon-key"
-   VITE_API_BASE_URL="http://localhost:3000"
-   ```
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Start the dev server:
-
-   ```bash
-   npm run dev
-   ```
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Vite dev server (port 5173) |
-| `npm run build` | Type-check + production build |
-| `npm run preview` | Preview production build |
-| `npm run lint` | ESLint check |
