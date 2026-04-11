@@ -2,3 +2,5 @@ notes.md
 node_modules
 .env
 settings.json
+.agents
+.claude
